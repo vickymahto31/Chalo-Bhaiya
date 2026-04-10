@@ -11,11 +11,16 @@ const app = express();
 
 // ──────────── Security Middleware ────────────
 
+// Allow React frontend to connect
+app.use(cors({ 
+  origin: process.env.FRONTEND_URL, // Cannot be '*' if using credentials
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 // Set security HTTP headers (disabled CORP for CORS)
 app.use(helmet({ crossOriginResourcePolicy: false }));
-
-// Allow React frontend to connect
-app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 
 // Parse JSON with a 10kb size limit to prevent DoS attacks
 app.use(express.json({ limit: '10kb' }));
