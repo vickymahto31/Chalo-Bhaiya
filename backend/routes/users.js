@@ -23,11 +23,41 @@ router.get('/profile', auth, async (req, res, next) => {
 router.put('/profile', auth, async (req, res, next) => {
   try {
     const { name, phoneNumber, gender, dob, studentId } = req.body;
+
+    // ── Input Validation ──
+    const updateFields = {};
+
+    if (name !== undefined) {
+      const trimmedName = name.trim();
+      if (trimmedName.length < 2 || trimmedName.length > 50) {
+        return res.status(400).json({ message: 'Name must be between 2 and 50 characters.' });
+      }
+      updateFields.name = trimmedName;
+    }
+
+    if (phoneNumber !== undefined) {
+      const trimmedPhone = phoneNumber.trim();
+      if (trimmedPhone && !/^\+?[\d\s-]{7,15}$/.test(trimmedPhone)) {
+        return res.status(400).json({ message: 'Please provide a valid phone number.' });
+      }
+      updateFields.phoneNumber = trimmedPhone;
+    }
+
+    if (gender !== undefined) {
+      const validGenders = ['Male', 'Female', 'Other', ''];
+      if (!validGenders.includes(gender)) {
+        return res.status(400).json({ message: 'Gender must be Male, Female, or Other.' });
+      }
+      updateFields.gender = gender;
+    }
+
+    if (dob !== undefined) updateFields.dob = dob;
+    if (studentId !== undefined) updateFields.studentId = studentId;
     
     // Find and update user
     const updatedUser = await User.findByIdAndUpdate(
       req.user.userId,
-      { $set: { name, phoneNumber, gender, dob, studentId } },
+      { $set: updateFields },
       { new: true, runValidators: true }
     ).select('-password');
     

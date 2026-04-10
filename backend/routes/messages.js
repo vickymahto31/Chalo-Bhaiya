@@ -9,6 +9,24 @@ const User = require('../models/User');
 router.post('/', auth, async (req, res, next) => {
   try {
     const { receiverId, content } = req.body;
+
+    // ── Input Validation ──
+    if (!receiverId || !content) {
+      return res.status(400).json({ message: 'Receiver and message content are required.' });
+    }
+
+    if (typeof content !== 'string' || content.trim().length === 0) {
+      return res.status(400).json({ message: 'Message cannot be empty.' });
+    }
+
+    if (content.trim().length > 1000) {
+      return res.status(400).json({ message: 'Message is too long (max 1000 characters).' });
+    }
+
+    // Prevent messaging yourself
+    if (receiverId === req.user.userId) {
+      return res.status(400).json({ message: 'You cannot send a message to yourself.' });
+    }
     
     // Validate receiver exists
     const receiver = await User.findById(receiverId);
@@ -19,7 +37,7 @@ router.post('/', auth, async (req, res, next) => {
     const newMessage = new Message({
       sender: req.user.userId,
       receiver: receiverId,
-      content
+      content: content.trim()
     });
 
     await newMessage.save();

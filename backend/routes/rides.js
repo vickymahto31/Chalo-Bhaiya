@@ -26,7 +26,36 @@ router.get('/', async (req, res, next) => {
 router.post('/', auth, async (req, res, next) => {
   try {
     const { pickupLocation, dropoffLocation, departureTime, availableSeats, pricePerSeat, womenOnly } = req.body;
-    
+
+    // ── Input Validation ──
+    if (!pickupLocation || !dropoffLocation || !departureTime || !availableSeats || pricePerSeat === undefined) {
+      return res.status(400).json({ message: 'All fields (pickup, dropoff, time, seats, price) are required.' });
+    }
+
+    if (typeof pickupLocation !== 'string' || pickupLocation.trim().length < 2) {
+      return res.status(400).json({ message: 'Pickup location must be at least 2 characters.' });
+    }
+
+    if (typeof dropoffLocation !== 'string' || dropoffLocation.trim().length < 2) {
+      return res.status(400).json({ message: 'Dropoff location must be at least 2 characters.' });
+    }
+
+    const seats = Number(availableSeats);
+    const price = Number(pricePerSeat);
+
+    if (!Number.isInteger(seats) || seats < 1 || seats > 4) {
+      return res.status(400).json({ message: 'Available seats must be between 1 and 4.' });
+    }
+
+    if (isNaN(price) || price < 0) {
+      return res.status(400).json({ message: 'Price per seat must be a non-negative number.' });
+    }
+
+    const departure = new Date(departureTime);
+    if (isNaN(departure.getTime()) || departure <= new Date()) {
+      return res.status(400).json({ message: 'Departure time must be a valid future date.' });
+    }
+
     // If a ride is women-only, verify the creator is female
     if (womenOnly) {
       const user = await User.findById(req.user.userId);
@@ -37,11 +66,11 @@ router.post('/', auth, async (req, res, next) => {
 
     const newRide = new Ride({
       creator: req.user.userId,
-      pickupLocation,
-      dropoffLocation,
-      departureTime,
-      availableSeats,
-      pricePerSeat,
+      pickupLocation: pickupLocation.trim(),
+      dropoffLocation: dropoffLocation.trim(),
+      departureTime: departure,
+      availableSeats: seats,
+      pricePerSeat: price,
       womenOnly: womenOnly || false
     });
 
@@ -65,7 +94,7 @@ router.post('/:id/book', auth, async (req, res, next) => {
     }
 
     // Check if the user has already booked this ride
-    const alreadyBooked = user.bookedRides.find(r => r.rideId === rideId);
+    const alreadyBooked = user.bookedRides.find(r => r.rideId.toString() === rideId);
     if (alreadyBooked) {
       return res.status(400).json({ message: 'You have already booked a seat for this ride' });
     }
