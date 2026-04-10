@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
 
@@ -38,7 +38,7 @@ const Chat = () => {
   const fetchMessages = async (showLoading = true) => {
     if (showLoading) setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/messages/${partnerId}`, {
+      const res = await api.get(`/api/messages/${partnerId}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setMessages(res.data.messages);
@@ -73,7 +73,7 @@ const Chat = () => {
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
 
     try {
-      await axios.post('http://localhost:5000/api/messages', {
+      await api.post('/api/messages', {
         receiverId: partnerId,
         content: tempMessage
       }, {

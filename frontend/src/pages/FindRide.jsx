@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import SearchFilter from '../components/SearchFilter';
 import RideList from '../components/RideList';
 
@@ -12,7 +12,7 @@ const FindRide = () => {
   useEffect(() => {
     const fetchRides = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/rides');
+        const res = await api.get('/api/rides');
         setRides(res.data);
         setFilteredRides(res.data); // Initially show all valid rides
       } catch (err) {

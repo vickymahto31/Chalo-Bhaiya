@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api';
 import { toast } from 'react-toastify';
 
 const Profile = () => {
@@ -26,7 +26,7 @@ const Profile = () => {
 
   const fetchProfileData = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/users/profile', {
+      const res = await api.get('/api/users/profile', {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setProfileData({
@@ -44,7 +44,7 @@ const Profile = () => {
 
   const fetchHistoryData = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/users/history', {
+      const res = await api.get('/api/users/history', {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setHistoryData({
@@ -61,7 +61,7 @@ const Profile = () => {
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('http://localhost:5000/api/users/profile', profileData, {
+      await api.put('/api/users/profile', profileData, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       toast.success('Profile updated successfully!');

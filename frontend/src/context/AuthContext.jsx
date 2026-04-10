@@ -9,18 +9,20 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     const userName = localStorage.getItem('userName');
     const gender = localStorage.getItem('gender');
+    const userId = localStorage.getItem('userId');
     if (token) {
-      return { token, name: userName, gender };
+      return { token, name: userName, gender, id: userId };
     }
     return null;
   });
   const navigate = useNavigate();
 
-  const login = (token, userName, gender) => {
+  const login = (token, userName, gender, userId) => {
     localStorage.setItem('token', token);
     localStorage.setItem('userName', userName);
     if (gender) localStorage.setItem('gender', gender);
-    setUser({ token, name: userName, gender });
+    if (userId) localStorage.setItem('userId', userId);
+    setUser({ token, name: userName, gender, id: userId });
     toast.success(`Welcome back, ${userName}!`);
     navigate('/');
   };
@@ -29,6 +31,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
     localStorage.removeItem('gender');
+    localStorage.removeItem('userId');
     setUser(null);
     toast.info('You have been logged out.');
     navigate('/login');

@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
 
@@ -18,8 +18,8 @@ const Login = () => {
     if (email.trim() !== '' && password.trim() !== '') {
       try {
         setLoading(true);
-        const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-        login(response.data.token, response.data.user.name, response.data.user.gender);
+        const response = await api.post('/api/auth/login', { email, password });
+        login(response.data.token, response.data.user.name, response.data.user.gender, response.data.user.id);
       } catch (error) {
         if (error.response && error.response.status === 404) {
           toast.error("Looks like you don't have an account yet. Please sign up first!");

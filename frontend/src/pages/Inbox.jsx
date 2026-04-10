@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { AuthContext } from '../context/AuthContext';
 
 const Inbox = () => {
@@ -17,7 +17,7 @@ const Inbox = () => {
 
     const fetchInbox = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/messages', {
+        const res = await api.get('/api/messages', {
           headers: { Authorization: `Bearer ${user.token}` }
         });
         setConversations(res.data);

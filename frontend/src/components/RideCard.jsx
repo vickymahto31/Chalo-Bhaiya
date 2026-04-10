@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ const RideCard = ({ ride }) => {
     try {
       setIsBooking(true);
       // Backend uses `_id`
-      const res = await axios.post(`http://localhost:5000/api/rides/${ride._id}/book`, {}, {
+      const res = await api.post(`/api/rides/${ride._id}/book`, {}, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       toast.success(res.data.message || 'Seat booked successfully!');

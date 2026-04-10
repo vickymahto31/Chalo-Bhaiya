@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { API_BASE_URL } from '../api';
 
 const OfferRide = () => {
   const navigate = useNavigate();
@@ -33,6 +34,10 @@ const OfferRide = () => {
         const today = new Date();
         const [hours, minutes] = time.split(':');
         today.setHours(hours, minutes, 0, 0);
+        // If the time is already past, assume they mean tomorrow
+        if (today < new Date()) {
+          today.setDate(today.getDate() + 1);
+        }
         return today.toISOString();
       })(),
       availableSeats: Number(seats),
@@ -41,7 +46,7 @@ const OfferRide = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/rides', {
+      const response = await fetch(`${API_BASE_URL}/api/rides`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

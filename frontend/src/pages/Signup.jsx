@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { toast } from 'react-toastify';
 
 const Signup = () => {
@@ -31,7 +31,7 @@ const Signup = () => {
 
       try {
         setLoading(true);
-        await axios.post('http://localhost:5000/api/auth/register', { name, email, password, studentId, gender });
+        await api.post('/api/auth/register', { name, email, password, studentId, gender });
         toast.success("Account created successfully! You can now log in.");
         navigate('/login');
       } catch (error) {
