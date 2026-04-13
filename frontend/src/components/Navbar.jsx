@@ -1,10 +1,11 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -82,8 +83,93 @@ const Navbar = () => {
               </div>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-slate-600 hover:text-brand-500 focus:outline-none p-2"
+              aria-label="Toggle mobile menu"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 pt-2 pb-4 space-y-3 shadow-lg">
+          <Link 
+            to="/find-ride" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`block text-base font-medium p-2 rounded-md transition-colors ${isActive('/find-ride') ? 'text-brand-500 bg-brand-50' : 'text-slate-600 hover:bg-slate-50'}`}
+          >
+            Find a Ride
+          </Link>
+          <Link 
+            to="/offer-ride" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`block text-base font-medium p-2 rounded-md transition-colors ${isActive('/offer-ride') ? 'text-brand-500 bg-brand-50' : 'text-slate-600 hover:bg-slate-50'}`}
+          >
+            Offer a Ride
+          </Link>
+          <Link 
+            to="/track-ride" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`block text-base font-medium p-2 rounded-md transition-colors ${isActive('/track-ride') ? 'text-brand-500 bg-brand-50' : 'text-slate-600 hover:bg-slate-50'}`}
+          >
+            Track Ride
+          </Link>
+
+          <div className="h-px w-full bg-slate-200 my-2"></div>
+
+          {user ? (
+            <div className="flex flex-col space-y-1">
+              <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-2 group rounded-md hover:bg-slate-50 transition-colors">
+                <img src="https://cdn-icons-png.flaticon.com/128/3033/3033143.png" alt="profile" className="h-8 w-8 rounded-full shadow-sm" />
+                <span className="text-base font-medium text-slate-700 group-hover:text-brand-600 transition-colors">{user.name}</span>
+              </Link>
+              <Link to="/inbox" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-md hover:bg-slate-50 text-slate-600 hover:text-brand-500 transition-colors">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                <span className="text-base font-medium">Messages</span>
+              </Link>
+              <button
+                onClick={() => {
+                  logout();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full text-left p-2 rounded-md text-base font-medium text-red-500 hover:bg-red-50 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col space-y-3 pt-2">
+              <Link 
+                to="/login" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full text-center text-base font-semibold text-slate-600 hover:text-brand-500 py-2.5 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              >
+                Log in
+              </Link>
+              <Link 
+                to="/signup" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block w-full text-center text-base font-semibold bg-brand-500 text-white py-2.5 rounded-lg shadow-sm hover:bg-brand-600 active:scale-95 transition-all"
+              >
+                Sign up
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 };
