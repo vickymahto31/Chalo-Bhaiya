@@ -8,7 +8,11 @@ const RideSchema = new mongoose.Schema({
   availableSeats: { type: Number, default: 3 },
   pricePerSeat: { type: Number, required: true, default: 0 },
   status: { type: String, default: 'Open' }, // Open, Full, Completed
-  womenOnly: { type: Boolean, default: false }
+  womenOnly: { type: Boolean, default: false },
+  passengers: [{
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    bookedAt: { type: Date, default: Date.now }
+  }]
 });
 
 module.exports = mongoose.model('Ride', RideSchema);

@@ -75,8 +75,10 @@ router.put('/profile', auth, async (req, res, next) => {
 // Get user's ride history (offered rides and booked rides)
 router.get('/history', auth, async (req, res, next) => {
   try {
-    // 1. Fetch rides offered by the user
-    const offeredRides = await Ride.find({ creator: req.user.userId }).sort({ departureTime: -1 });
+    // 1. Fetch rides offered by the user (with passenger details)
+    const offeredRides = await Ride.find({ creator: req.user.userId })
+      .sort({ departureTime: -1 })
+      .populate('passengers.userId', 'name phoneNumber');
     
     // 2. Fetch the user's booked rides
     const user = await User.findById(req.user.userId).populate('bookedRides.rideId');

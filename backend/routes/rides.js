@@ -5,7 +5,7 @@ const User = require('../models/User');
 const Ride = require('../models/Ride');
 
 // GET /api/rides
-// Fetch all active rides
+// Fetch all active rides (public — no auth required for browsing)
 router.get('/', async (req, res, next) => {
   try {
     const rides = await Ride.find({ 
@@ -13,7 +13,22 @@ router.get('/', async (req, res, next) => {
       availableSeats: { $gt: 0 }
     })
     .sort({ departureTime: 1 })
-    .populate('creator', 'name phoneNumber'); // Populate contact info
+    .populate('creator', 'name phoneNumber')
+    .populate('passengers.userId', 'name');
+
+    res.json(rides);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/rides/my-rides
+// Fetch rides created by the logged-in user (with passenger details)
+router.get('/my-rides', auth, async (req, res, next) => {
+  try {
+    const rides = await Ride.find({ creator: req.user.userId })
+      .sort({ departureTime: -1 })
+      .populate('passengers.userId', 'name phoneNumber');
 
     res.json(rides);
   } catch (err) {
@@ -71,7 +86,8 @@ router.post('/', auth, async (req, res, next) => {
       departureTime: departure,
       availableSeats: seats,
       pricePerSeat: price,
-      womenOnly: womenOnly || false
+      womenOnly: womenOnly || false,
+      passengers: []
     });
 
     await newRide.save();
@@ -88,33 +104,60 @@ router.post('/:id/book', auth, async (req, res, next) => {
     const rideId = req.params.id;
     const userId = req.user.userId;
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Check if the user has already booked this ride
-    const alreadyBooked = user.bookedRides.find(r => r.rideId.toString() === rideId);
-    if (alreadyBooked) {
-      return res.status(400).json({ message: 'You have already booked a seat for this ride' });
-    }
-
     const ride = await Ride.findById(rideId);
     if (!ride) {
       return res.status(404).json({ message: 'Ride not found' });
     }
 
-    if (ride.womenOnly && user.gender !== 'Female') {
-      return res.status(403).json({ message: 'These rides are only for women and you cannot book it.' });
+    // Prevent booking your own ride
+    if (ride.creator.toString() === userId) {
+      return res.status(400).json({ message: 'You cannot book your own ride.' });
     }
 
-    // Add the ride to the user's booked rides history
-    user.bookedRides.push({ rideId });
-    await user.save();
+    // Check if user already booked this ride (check on ride's passengers)
+    const alreadyBooked = ride.passengers.some(p => p.userId.toString() === userId);
+    if (alreadyBooked) {
+      return res.status(400).json({ message: 'You have already booked a seat for this ride.' });
+    }
+
+    // Check seat availability
+    if (ride.availableSeats <= 0) {
+      return res.status(400).json({ message: 'No seats available for this ride.' });
+    }
+
+    // Gender check for women-only rides
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (ride.womenOnly && user.gender !== 'Female') {
+      return res.status(403).json({ message: 'This ride is only for women and you cannot book it.' });
+    }
+
+    // ── Update the Ride: decrement seats, add passenger ──
+    ride.availableSeats -= 1;
+    ride.passengers.push({ userId });
+    if (ride.availableSeats === 0) {
+      ride.status = 'Full';
+    }
+    await ride.save();
+
+    // ── Also update the user's bookedRides history ──
+    const alreadyInHistory = user.bookedRides.find(r => r.rideId.toString() === rideId);
+    if (!alreadyInHistory) {
+      user.bookedRides.push({ rideId });
+      await user.save();
+    }
 
     res.status(200).json({ 
-      message: 'Seat booked successfully', 
-      bookedRides: user.bookedRides 
+      message: 'Seat booked successfully!', 
+      ride: {
+        _id: ride._id,
+        availableSeats: ride.availableSeats,
+        status: ride.status,
+        creator: ride.creator
+      }
     });
   } catch (err) {
     next(err);
@@ -122,3 +165,4 @@ router.post('/:id/book', auth, async (req, res, next) => {
 });
 
 module.exports = router;
+
