@@ -85,10 +85,10 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center mr-2">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-slate-600 hover:text-brand-500 focus:outline-none p-2"
+              className="text-slate-700 bg-slate-100 border border-slate-300 rounded-md shadow-sm hover:text-brand-500 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 p-2"
               aria-label="Toggle mobile menu"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
