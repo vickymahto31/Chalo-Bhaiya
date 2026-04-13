@@ -97,9 +97,9 @@ const Profile = () => {
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        
+
         <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-          
+
           {/* Header section */}
           <div className="bg-navy-900 px-8 py-10 text-white text-center sm:text-left flex flex-col sm:flex-row items-center gap-6">
             <div className="w-24 h-24 bg-brand-500 rounded-full border-4 border-white/20 p-2 shadow-xl flex items-center justify-center">
@@ -164,7 +164,7 @@ const Profile = () => {
                         <span className="text-slate-800 font-medium">{profileData.dob ? new Date(profileData.dob).toLocaleDateString() : 'Not provided'}</span>
                       </div>
                     </div>
-                    
+
                     <div className="pt-4 flex justify-end">
                       <button
                         onClick={() => setIsEditing(true)}
@@ -179,19 +179,19 @@ const Profile = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-1">Full Name</label>
-                        <input type="text" value={profileData.name} onChange={(e) => setProfileData({...profileData, name: e.target.value})} className="w-full py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" required />
+                        <input type="text" value={profileData.name} onChange={(e) => setProfileData({ ...profileData, name: e.target.value })} className="w-full py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" required />
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-1">Student ID</label>
-                        <input type="text" value={profileData.studentId} onChange={(e) => setProfileData({...profileData, studentId: e.target.value})} className="w-full py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" />
+                        <input type="text" value={profileData.studentId} onChange={(e) => setProfileData({ ...profileData, studentId: e.target.value })} className="w-full py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" />
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-1">Phone Number</label>
-                        <input type="tel" value={profileData.phoneNumber} onChange={(e) => setProfileData({...profileData, phoneNumber: e.target.value})} className="w-full py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" />
+                        <input type="tel" value={profileData.phoneNumber} onChange={(e) => setProfileData({ ...profileData, phoneNumber: e.target.value })} className="w-full py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" />
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-1">Gender</label>
-                        <select value={profileData.gender} onChange={(e) => setProfileData({...profileData, gender: e.target.value})} className="w-full py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                        <select value={profileData.gender} onChange={(e) => setProfileData({ ...profileData, gender: e.target.value })} className="w-full py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
                           <option value="">Select Gender</option>
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
@@ -200,7 +200,7 @@ const Profile = () => {
                       </div>
                       <div className="sm:col-span-2">
                         <label className="block text-sm font-semibold text-slate-700 mb-1">Date of Birth</label>
-                        <input type="date" value={profileData.dob} onChange={(e) => setProfileData({...profileData, dob: e.target.value})} className="w-full sm:w-1/2 py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" />
+                        <input type="date" value={profileData.dob} onChange={(e) => setProfileData({ ...profileData, dob: e.target.value })} className="w-full sm:w-1/2 py-2.5 px-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" />
                       </div>
                     </div>
 
@@ -233,7 +233,7 @@ const Profile = () => {
                       <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     </div>
                     <p className="text-slate-500 font-medium">You haven't offered any rides yet.</p>
-                    <button 
+                    <button
                       onClick={() => navigate('/offer-ride')}
                       className="mt-4 bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 px-5 rounded-xl transition-all active:scale-95 text-sm"
                     >
@@ -261,13 +261,12 @@ const Profile = () => {
                               <span className="bg-slate-100 text-slate-600 text-sm font-medium px-3 py-1 rounded-full">
                                 {ride.availableSeats} seats left
                               </span>
-                              <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${
-                                ride.status === 'Full' 
-                                  ? 'bg-red-50 text-red-600 border-red-100' 
-                                  : isFuture 
-                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
-                                    : 'bg-slate-50 text-slate-500 border-slate-200'
-                              }`}>
+                              <span className={`text-sm font-semibold px-3 py-1 rounded-full border ${ride.status === 'Full'
+                                ? 'bg-red-50 text-red-600 border-red-100'
+                                : isFuture
+                                  ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                  : 'bg-slate-50 text-slate-500 border-slate-200'
+                                }`}>
                                 {ride.status === 'Full' ? '🔴 Full' : isFuture ? '🟢 Active' : '⏹ Past'}
                               </span>
                               {ride.womenOnly && (
@@ -305,7 +304,7 @@ const Profile = () => {
                                       </div>
                                       <div className="flex items-center gap-2">
                                         {pUser.phoneNumber && (
-                                          <a 
+                                          <a
                                             href={`tel:${pUser.phoneNumber}`}
                                             className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg hover:bg-emerald-100 transition-colors"
                                           >
@@ -407,7 +406,7 @@ const Profile = () => {
                                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 bg-brand-50 px-3 py-1.5 rounded-lg hover:bg-brand-100 transition-colors"
                                   >
                                     <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path></svg>
-                                    Message Driver
+                                    Message
                                   </button>
                                 )}
                               </div>
