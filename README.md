@@ -6,4 +6,4 @@ Post a Ride: Students can easily post their intended departure time and destinat
 Find a Ride: A real-time list of available rides that students can join.
 Cost Calculator: An integrated tool to estimate and split auto-rickshaw fares among passengers.
 MU Authentication: A secure login system to ensure the platform is used exclusively by verified Marwadi University students.
-Responsive Design: Fully optimized for both desktop and mobile use, ensuring students can find rides on the go
+Responsive Design: Fully optimized for both desktop and mobile use, ensuring students can find rides on the go.
